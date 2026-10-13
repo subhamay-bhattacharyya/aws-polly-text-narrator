@@ -1,6 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 
-Description: 'Nested CloudFormation template to create an S3 bucket with versioning and public access blocking'
+Description: >-
+  Root CloudFormation template for Develop a text narrator using Amazon Polly. Creates:
+  - S3 bucket with versioning enabled and all public access blocked
 
 Parameters:
   ProjectName:
