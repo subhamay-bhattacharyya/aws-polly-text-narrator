@@ -333,7 +333,7 @@ Resources:
         EnvironmentNameValue: !Ref Environment
         CustomNameValue: !Sub |
           {
-            "S3_BUCKET_NAME": "${S3Bucket.Outputs.BucketName}"
+            "S3_BUCKET_NAME": "${S3Bucket.Outputs.S3BucketName}}"
           }
       Tags:
         - Key: Environment

@@ -19,7 +19,7 @@
 
 ## Overview
 
-An automated receipt processing pipeline that ingests receipt images/PDFs, extracts structured data using ML, and stores results with email notifications. Built entirely with Infrastructure-as-Code using CloudFormation nested stacks for modularity and reusability across environments.
+An automated document processing pipeline. A user uploads a document to Amazon S3, which triggers an AWS Lambda function. Lambda processes the document with Amazon Polly and saves the output back to S3. Built entirely with Infrastructure-as-Code using CloudFormation nested stacks for modularity and reusability across environments.
 
 ---
 
@@ -27,40 +27,32 @@ An automated receipt processing pipeline that ingests receipt images/PDFs, extra
 
 ``` mermaid
 flowchart LR
-    User["👤 User"] -->|Uploads receipt| S3
+    User["👤 User"] -->|"1. Uploads document"| S3
 
     subgraph AWS["AWS Cloud"]
         S3["📦 Amazon S3"]
         Lambda["⚙️ AWS Lambda"]
-        Textract["🔍 Amazon Textract"]
-        DynamoDB["💾 Amazon DynamoDB"]
-        SES["📧 Amazon SES"]
+        Textract["🔍 Amazon Polly"]
 
         S3 -->|"2. Trigger"| Lambda
-        Lambda -->|"3. Process"| Textract
-        Textract -->|"4. Data"| Lambda
-        Lambda -->|"5. Store"| DynamoDB
-        Lambda -->|"6. Notify"| SES
+        Lambda -->|"3. Process document"| Polly
+        Textract -->|"4. Extracted data"| Lambda
+        Lambda -->|"5. Save output"| S3
     end
-
-    SES -->|Email notification| User
 
     style User fill:#e1f5ff
     style S3 fill:#fff3e0
     style Lambda fill:#f3e5f5
     style Textract fill:#f3e5f5
-    style DynamoDB fill:#e8f5e9
-    style SES fill:#fce4ec
 ```
 
 ### Steps
 
-1. The user uploads a receipt to S3.
+1. The user uploads a document to S3.
 2. The S3 upload triggers the Lambda function.
-3. Lambda invokes Amazon Textract to extract data from the receipt.
-4. Textract returns structured data to Lambda.
-5. Lambda stores the processed data in the DynamoDB table.
-6. Lambda uses Amazon SES to send an email notification to the user.
+3. Lambda sends the document to Amazon Polly for processing.
+4. Polly returns the processed data to Lambda.
+5. Lambda saves the output to S3.
 
 ---
 
@@ -68,11 +60,9 @@ flowchart LR
 
 | Component | Purpose | Status |
 | --- | --- | --- |
-| **S3 Bucket** | Stores receipt images/PDFs with versioning & encryption | ✅ Complete |
-| **DynamoDB Table** | Stores extracted receipt metadata | ✅ Complete |
-| **Lambda Function** | Orchestrates receipt processing workflow | ✅ Complete |
-| **Textract Integration** | Extracts text/data from receipts | ✅ Complete |
-| **SES Notifications** | Sends email with extracted details | ✅ Complete |
+| **S3 Bucket** | Stores uploaded documents and the saved output | ✅ Complete |
+| **Lambda Function** | Orchestrates the document processing workflow | 🚧 In progress |
+| **Amazon Polly Integration** | Processes documents and returns the processed data | 🚧 In progress |
 | **IAM Roles & Policies** | Cross-service permissions | ✅ Complete |
 
 ---
